@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import './Styles/loadingPage.css';
 
 function PrivateRoute({ children }) {
-  const user = useContext(AuthLoginInfo);
+  const user = useContext(AuthLoginInfo) ?? null;
   if(user === undefined) {
     return (
       <div className="loading-page-wrapper">

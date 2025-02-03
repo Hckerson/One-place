@@ -1,13 +1,13 @@
 require("dotenv").config();
 
-var mysql = require('mysql');
+const {Pool} = require('pg');
 var express = require('express');
 var session = require('express-session');
 const flash = require('express-flash');
 var app = express();
 var bodyParser = require('body-parser');
 var path = require('path');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 const passport = require("passport");
 const cors = require("cors");
 
@@ -32,14 +32,12 @@ const {
   createNewUser
 } = require("./queries.js");
 
-var connection = mysql.createPool({
+var client = new Pool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DATABASE,
-  multipleStatements: true,
-  timezone: 'utc'
-});
+  database: process.env.DATABASE
+})
 
 // CONFIGURING OPTIONS
 const corsOptions = {
@@ -49,7 +47,7 @@ const corsOptions = {
 };
 
 const initializePassport = require('./passport-config');
-initializePassport(connection, passport);
+initializePassport(client, passport);
 
 app.use(cors(corsOptions));
 app.use(flash());
